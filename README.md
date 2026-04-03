@@ -1,5 +1,13 @@
 # Logsnare Helm Charts
 
+<p align="center">
+  <img src="logo.svg" alt="Logsnare Logo" width="120" height="120">
+</p>
+
+<p align="center">
+  <strong>Kubernetes Log Monitoring Agent</strong>
+</p>
+
 [![Helm](https://img.shields.io/badge/Helm-v3-blue.svg)](https://helm.sh)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24%2B-blue.svg)](https://kubernetes.io)

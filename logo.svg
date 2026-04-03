@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#gradient1)"/>
+  
+  <!-- Inner circle -->
+  <circle cx="100" cy="100" r="75" fill="#1E293B"/>
+  
+  <!-- Log lines being captured -->
+  <g fill="none" stroke="#94A3B8" stroke-width="3" stroke-linecap="round">
+    <line x1="45" y1="60" x2="85" y2="60"/>
+    <line x1="45" y1="80" x2="95" y2="80"/>
+    <line x1="45" y1="100" x2="90" y2="100"/>
+    <line x1="45" y1="120" x2="80" y2="120"/>
+    <line x1="45" y1="140" x2="75" y2="140"/>
+  </g>
+  
+  <!-- Snare/Net capturing logs -->
+  <path d="M 110 45 
+           Q 155 55, 155 100 
+           Q 155 145, 110 155
+           Q 130 130, 130 100
+           Q 130 70, 110 45" 
+        fill="url(#gradient2)" 
+        opacity="0.9"/>
+  
+  <!-- Net pattern lines -->
+  <g stroke="#0D9488" stroke-width="2" fill="none" opacity="0.6">
+    <path d="M 115 55 Q 145 60, 145 100 Q 145 140, 115 145"/>
+    <path d="M 120 65 Q 135 70, 135 100 Q 135 130, 120 135"/>
+    <!-- Horizontal net lines -->
+    <line x1="110" y1="75" x2="150" y2="75"/>
+    <line x1="110" y1="100" x2="155" y2="100"/>
+    <line x1="110" y1="125" x2="150" y2="125"/>
+  </g>
+  
+  <!-- Captured log highlight -->
+  <g fill="none" stroke="url(#gradient2)" stroke-width="3" stroke-linecap="round">
+    <line x1="85" y1="60" x2="115" y2="60" opacity="0.8"/>
+    <line x1="95" y1="80" x2="125" y2="80"/>
+    <line x1="90" y1="100" x2="130" y2="100"/>
+    <line x1="80" y1="120" x2="120" y2="120"/>
+    <line x1="75" y1="140" x2="110" y2="140" opacity="0.8"/>
+  </g>
+  
+  <!-- Arrow pointing into snare -->
+  <polygon points="100,90 100,110 120,100" fill="#10B981"/>
+</svg>
