@@ -80,6 +80,7 @@ helm install logsnare-engine ./charts/logsnare-engine \
 | `replicaCount` | Number of replicas | `1` |
 | `image.repository` | Image repository | `devopsart1/logsnare-engine` |
 | `image.tag` | Image tag | `0.4.2` |
+| `storage.enabled` | Enable/disable storage backend (monitor + alert only when false) | `true` |
 | `storage.type` | Storage backend type | `file` |
 | `monitoring.namespaces` | Namespaces to monitor | `["default", "kube-system"]` |
 | `scalability.maxWorkers` | Max concurrent pod monitors | `20` |
