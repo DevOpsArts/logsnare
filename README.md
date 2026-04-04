@@ -3,18 +3,18 @@
 </p>
 
 <p align="center">
-  <em>The only Kubernetes log agent with intelligent error context capture and 9 pluggable storage backends — from PostgreSQL to Azure, AWS, and GCP cloud logging.</em>
+  <em>The only Kubernetes log agent with intelligent error context capture, rule-based alerting, and 9 pluggable storage backends — from PostgreSQL to Azure, AWS, and GCP cloud logging.</em>
 </p>
 
 [![Helm](https://img.shields.io/badge/Helm-v3-blue.svg)](https://helm.sh)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24%2B-blue.svg)](https://kubernetes.io)
 
-Official Helm charts for deploying **Logsnare-Engine** - a scalable Kubernetes log monitoring agent with intelligent error detection and multi-backend storage support.
+Official Helm charts for deploying **Logsnare-Engine** - a scalable Kubernetes log monitoring agent with intelligent error detection, pattern-based alerting, and multi-backend storage support.
 
 ## Overview
 
-Logsnare-Engine monitors pod logs across Kubernetes namespaces and captures contextual log data when errors are detected. It supports multiple storage backends including PostgreSQL, MongoDB, MySQL, Elasticsearch, Azure Log Analytics, AWS CloudWatch, and GCP Cloud Logging.
+Logsnare-Engine monitors pod logs across Kubernetes namespaces and captures contextual log data when errors are detected. It supports rule-based alerting (email, Slack, Teams, PagerDuty, webhooks) and multiple storage backends including PostgreSQL, MongoDB, MySQL, Elasticsearch, InfluxDB, Azure Log Analytics, AWS CloudWatch, and GCP Cloud Logging.
 
 ## Quick Start
 
