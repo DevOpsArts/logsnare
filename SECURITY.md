@@ -146,7 +146,7 @@ connections:
 ```yaml
 image:
   repository: devopsart1/logsnare-engine
-  tag: "0.4.1"  # Specific version, not "latest"
+  tag: "0.4.2"  # Specific version, not "latest"
   pullPolicy: IfNotPresent
 ```
 
