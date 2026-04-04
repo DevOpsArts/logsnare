@@ -1,0 +1,487 @@
+# Logsnare-Engine Helm Chart Values
+# ==================================
+
+# Namespace configuration
+namespace:
+  create: true
+  name: logsnare
+
+# Image configuration
+image:
+  repository: devopsart1/logsnare-engine
+  tag: "0.4.1"
+  pullPolicy: IfNotPresent
+
+# Replica count
+replicaCount: 1
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: logsnare-engine
+
+# RBAC configuration
+rbac:
+  create: true
+
+# =============================================================================
+# Leader Election Configuration (for High Availability)
+# =============================================================================
+# Enable when running multiple replicas to prevent duplicate log capture
+leaderElection:
+  enabled: false
+  # Name of the Lease object used for leader election
+  leaseName: "logsnare-engine-leader"
+  # How long the lease is valid (seconds)
+  leaseDurationSeconds: 15
+  # How long to try renewing before giving up (seconds)
+  renewDeadlineSeconds: 10
+  # How often to retry acquiring the lease (seconds)
+  retryPeriodSeconds: 2
+
+# Resource limits and requests
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+# =============================================================================
+# Scalability Configuration (for 100+ pods)
+# =============================================================================
+scalability:
+  # Maximum concurrent pod monitors (ThreadPoolExecutor workers)
+  # Increase for more pods, but watch memory usage
+  maxWorkerThreads: 20
+  
+  # Log buffer size per pod (lines to keep in memory)
+  # Lower = less memory, higher = more context before errors
+  logBufferSize: 5000
+  
+  # Batch queue size for storage writes
+  batchQueueSize: 1000
+  
+  # Seconds between batch flushes to storage
+  batchFlushInterval: 5
+  
+  # Rate limiting per pod (prevents DoS from chatty pods)
+  rateLimitPerPod: 1000    # logs per second
+  rateBurstPerPod: 5000    # burst capacity
+
+# Security context for pod
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+# Security context for container
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Log storage type: file, mongodb, mysql, postgresql, influxdb, elasticsearch, azure, gcp, aws
+storage:
+  type: "postgresql"
+  # Output directory for file storage (uses emptyDir)
+  outputDir: "/logs"
+  # EmptyDir size limit (optional)
+  emptyDirSizeLimit: "1Gi"
+
+# =============================================================================
+# Capture Window Configuration
+# =============================================================================
+# Controls how many minutes of logs are captured before and after an error
+captureWindow:
+  # Minutes of logs to capture BEFORE error is detected (rolling buffer)
+  bufferDurationMinutes: 2
+  # Minutes of logs to capture AFTER error is detected
+  captureAfterMinutes: 2
+
+# =============================================================================
+# Capture Mode Configuration
+# =============================================================================
+# Choose between capturing only error logs or all logs
+captureMode:
+  # When true, captures ALL logs regardless of error patterns
+  # When false (default), only captures logs around detected error patterns
+  captureAllLogs: false
+  # Batch size for capture-all mode (how many log lines before saving to DB)
+  batchSize: 100
+  # Batch timeout in seconds (force save after this many seconds even if batch not full)
+  batchTimeoutSeconds: 60
+
+# =============================================================================
+# Connection Configuration - Secrets will be created from these values
+# =============================================================================
+# SECURITY_NOTE: In production, consider using external secret management
+# (HashiCorp Vault, AWS Secrets Manager, etc.) instead of storing in values.yaml
+
+connections:
+  # MongoDB connection configuration
+  mongodb:
+    enabled: false
+    host: "mongodb.database.svc.cluster.local"
+    port: "27017"
+    database: "k8s_logs"
+    collection: "error_logs"
+    authSource: "admin"
+    # REPLACE_ME: Set actual credentials
+    username: ""
+    password: ""
+    # SSL/TLS Configuration
+    ssl:
+      enabled: false
+      # Path to CA certificate (mounted from secret)
+      caCert: ""
+      # Path to client certificate (for mutual TLS)
+      clientCert: ""
+      # Path to client key (for mutual TLS)
+      clientKey: ""
+      # Allow invalid certificates (NOT recommended for production)
+      allowInvalidCertificates: false
+      # Allow invalid hostnames (NOT recommended for production)
+      allowInvalidHostnames: false
+
+  # MySQL connection configuration
+  mysql:
+    enabled: false
+    host: "mysql.database.svc.cluster.local"
+    port: "3306"
+    database: "k8s_logs"
+    table: "error_logs"
+    # REPLACE_ME: Set actual credentials
+    username: ""
+    password: ""
+    # SSL/TLS Configuration
+    ssl:
+      enabled: false
+      # Path to CA certificate
+      caCert: ""
+      # Path to client certificate (for mutual TLS)
+      clientCert: ""
+      # Path to client key (for mutual TLS)
+      clientKey: ""
+      # Verify server certificate (recommended: true)
+      verifyCert: true
+      # Verify server identity (recommended: true)
+      verifyIdentity: true
+
+  # PostgreSQL connection configuration
+  postgresql:
+    enabled: true
+    host: "postgresql.logsnare.svc.cluster.local"
+    port: "5432"
+    database: "k8s_logs"
+    table: "error_logs"
+    # SECURITY: Set credentials via --set or external secrets
+    username: ""
+    password: ""
+    # SSL/TLS Configuration
+    ssl:
+      enabled: false
+      # SSL mode: disable, allow, prefer, require, verify-ca, verify-full
+      # - disable: No SSL
+      # - allow: Try non-SSL, then SSL
+      # - prefer: Try SSL, then non-SSL (default)
+      # - require: SSL required, no certificate verification
+      # - verify-ca: SSL required, verify CA
+      # - verify-full: SSL required, verify CA and hostname
+      mode: "prefer"
+      # Path to CA certificate (required for verify-ca, verify-full)
+      caCert: ""
+      # Path to client certificate (for mutual TLS)
+      clientCert: ""
+      # Path to client key (for mutual TLS)
+      clientKey: ""
+
+  # InfluxDB connection configuration
+  influxdb:
+    enabled: false
+    url: "http://influxdb.database.svc.cluster.local:8086"
+    org: "default"
+    bucket: "k8s_logs"
+    # REPLACE_ME: Set actual API token
+    token: ""
+    # SSL/TLS Configuration
+    ssl:
+      enabled: false
+      # Verify SSL certificates (recommended: true)
+      verifyCerts: true
+      # Path to CA certificate
+      caCert: ""
+      # Path to client certificate (for mutual TLS)
+      clientCert: ""
+      # Path to client key (for mutual TLS)
+      clientKey: ""
+
+  # Elasticsearch/OpenSearch connection configuration
+  elasticsearch:
+    enabled: false
+    hosts: "http://elasticsearch.database.svc.cluster.local:9200"
+    index: "k8s-error-logs"
+    # REPLACE_ME: Set actual credentials (use apiKey preferably)
+    username: ""
+    password: ""
+    # Preferred over username/password - format: id:api_key
+    apiKey: ""
+    # SSL/TLS Configuration
+    ssl:
+      enabled: false
+      # Verify SSL certificates (recommended: true)
+      verifyCerts: true
+      # Path to CA certificate
+      caCert: ""
+      # Path to client certificate (for mutual TLS)
+      clientCert: ""
+      # Path to client key (for mutual TLS)
+      clientKey: ""
+
+  # ==========================================================================
+  # Azure Log Analytics connection configuration
+  # ==========================================================================
+  # Sends logs to Azure Log Analytics workspace using HTTP Data Collector API
+  # Documentation: https://docs.microsoft.com/en-us/azure/azure-monitor/logs/data-collector-api
+  azure:
+    enabled: false
+    # Azure Log Analytics Workspace ID (GUID)
+    # Found in: Azure Portal > Log Analytics workspace > Agents > Workspace ID
+    # REPLACE_ME: Set your workspace ID
+    workspaceId: ""
+    # Primary or Secondary Shared Key (Base64 encoded)
+    # Found in: Azure Portal > Log Analytics workspace > Agents > Primary/Secondary key
+    # REPLACE_ME: Set your shared key
+    sharedKey: ""
+    # Custom log type name (becomes table name with _CL suffix)
+    # e.g., "LogsnareK8sLogs" creates table "LogsnareK8sLogs_CL"
+    logType: "LogsnareK8sLogs"
+    # Optional: Azure Resource ID for resource context
+    # Format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/{provider}/{resource-type}/{resource-name}
+    resourceId: ""
+
+  # ==========================================================================
+  # GCP Cloud Logging connection configuration
+  # ==========================================================================
+  # Sends logs to Google Cloud Logging (formerly Stackdriver)
+  # Documentation: https://cloud.google.com/logging/docs
+  # Authentication: Prefer Workload Identity on GKE over service account keys
+  gcp:
+    enabled: false
+    # Google Cloud Project ID (required)
+    # REPLACE_ME: Set your GCP project ID
+    projectId: ""
+    # Log name in Cloud Logging
+    # Full path: projects/{project}/logs/{logName}
+    logName: "logsnare"
+    # Monitored resource type for log entries
+    # Options: k8s_container, k8s_pod, k8s_cluster, global
+    resourceType: "k8s_container"
+    # Kubernetes cluster name (for k8s resource types)
+    clusterName: ""
+    # Cluster location/zone (for k8s resource types)
+    location: ""
+    # Path to service account JSON key file (optional)
+    # If not set, uses Workload Identity or Application Default Credentials
+    # SECURITY_NOTE: Prefer Workload Identity over service account keys
+    credentialsPath: ""
+    # Service account key JSON content (if not using Workload Identity)
+    # REPLACE_ME: Set service account key JSON (will be stored in K8s secret)
+    serviceAccountKey: ""
+
+  # ==========================================================================
+  # AWS CloudWatch Logs connection configuration
+  # ==========================================================================
+  # Sends logs to Amazon CloudWatch Logs
+  # Documentation: https://docs.aws.amazon.com/AmazonCloudWatch/
+  # Authentication: Prefer IRSA (IAM Roles for Service Accounts) on EKS
+  aws:
+    enabled: false
+    # AWS Region (required, e.g., us-east-1, eu-west-1)
+    # REPLACE_ME: Set your AWS region
+    region: ""
+    # CloudWatch Log Group name (required)
+    # Will be created automatically if it doesn't exist
+    # REPLACE_ME: Set your log group name
+    logGroup: ""
+    # Log stream prefix (log streams: {prefix}/{namespace}/{pod_name})
+    logStreamPrefix: "logsnare"
+    # Log retention in days (default: 30)
+    # Valid values: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653
+    retentionDays: 30
+    # AWS Access Key ID (optional - prefer IRSA on EKS)
+    # SECURITY_NOTE: Use IRSA instead of access keys when possible
+    # REPLACE_ME: Set access key if not using IRSA
+    accessKeyId: ""
+    # AWS Secret Access Key (optional - prefer IRSA on EKS)
+    # REPLACE_ME: Set secret key if not using IRSA
+    secretAccessKey: ""
+
+# =============================================================================
+# SSL Certificate Secrets (mount certificates from K8s secrets)
+# =============================================================================
+# Create secrets with your certificates and reference them here
+# Example: kubectl create secret generic db-certs --from-file=ca.crt --from-file=client.crt --from-file=client.key
+sslCertificates:
+  # Enable mounting SSL certificates from secrets
+  enabled: false
+  # Name of the secret containing SSL certificates
+  secretName: "logsnare-db-certs"
+  # Mount path for certificates inside the container
+  mountPath: "/certs"
+  # Certificate file names in the secret (customize based on your secret)
+  files:
+    # Common CA certificate (used if database-specific not set)
+    caCert: "ca.crt"
+    # MongoDB certificates
+    mongoCaCert: ""
+    mongoClientCert: ""
+    mongoClientKey: ""
+    # MySQL certificates
+    mysqlCaCert: ""
+    mysqlClientCert: ""
+    mysqlClientKey: ""
+    # PostgreSQL certificates
+    postgresqlCaCert: ""
+    postgresqlClientCert: ""
+    postgresqlClientKey: ""
+    # InfluxDB certificates
+    influxdbCaCert: ""
+    influxdbClientCert: ""
+    influxdbClientKey: ""
+    # Elasticsearch certificates
+    elasticsearchCaCert: ""
+    elasticsearchClientCert: ""
+    elasticsearchClientKey: ""
+
+# =============================================================================
+# Monitoring Configuration
+# =============================================================================
+config:
+  # Namespaces to monitor
+  namespaces:
+    - default
+    - kube-system
+
+  # Error patterns (regex supported)
+  errorPatterns:
+    - "ERROR"
+    - "Exception"
+    - "FATAL"
+    - "CRITICAL"
+    - "Traceback"
+    - "panic:"
+    - "OOMKilled"
+    - "CrashLoopBackOff"
+    - "error\\s*:"
+    - "failed to"
+    - "unable to"
+    - "HTTP/\\d\\.\\d\"\\s+5\\d{2}"
+    - "at\\s+[\\w.$]+\\([\\w]+\\.java:\\d+\\)"
+    - "File\\s+\"[^\"]+\",\\s+line\\s+\\d+"
+
+  # Plain string matches (case-insensitive)
+  errorStrings:
+    - "NullPointerException"
+    - "OutOfMemoryError"
+    - "StackOverflowError"
+    - "ConnectionRefused"
+    - "TimeoutException"
+    - "SIGKILL"
+    - "SIGTERM"
+    - "exit code 1"
+    - "permission denied"
+    - "access denied"
+    - "authentication failed"
+    - "authorization failed"
+
+# Probes configuration
+probes:
+  liveness:
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Annotations for the deployment pod
+podAnnotations: {}
+
+# Labels for the deployment pod
+podLabels: {}
+
+# =============================================================================
+# Graceful Shutdown Configuration
+# =============================================================================
+# Time to allow for graceful shutdown (seconds)
+# Should be long enough for active monitors to clean up
+terminationGracePeriodSeconds: 30
+
+# =============================================================================
+# Pod Disruption Budget (for High Availability)
+# =============================================================================
+# Ensures minimum availability during voluntary disruptions
+# Only applies when replicaCount > 1
+podDisruptionBudget:
+  enabled: true
+  # Minimum number of pods that must be available (integer or percentage)
+  minAvailable: 1
+  # OR maximum number of pods that can be unavailable
+  # maxUnavailable: 1
+
+# =============================================================================
+# Network Policy (Defense in Depth)
+# =============================================================================
+# Restricts network access to only required destinations
+networkPolicy:
+  enabled: false  # Enable in production for network isolation
+  
+  # Kubernetes API server CIDR (for pod/log watch API calls)
+  # Set to your cluster's API server CIDR in production
+  kubeApiCidr: "0.0.0.0/0"
+  
+  # Database-specific network rules (optional - for tighter restrictions)
+  # If not specified, allows egress to the database port from any namespace
+  mongodb:
+    namespace: "database"
+    # podSelector:
+    #   app: mongodb
+  
+  mysql:
+    namespace: "database"
+    # podSelector:
+    #   app: mysql
+  
+  postgresql:
+    namespace: "logsnare"
+    # podSelector:
+    #   app: postgresql
+  
+  influxdb:
+    namespace: "database"
+    # podSelector:
+    #   app: influxdb
+  
+  elasticsearch:
+    namespace: "logsnare"
+    # podSelector:
+    #   app: elasticsearch
