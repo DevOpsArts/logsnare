@@ -66,7 +66,7 @@ spec:
             # =================================================================
             # Database Credentials from Secrets
             # =================================================================
-            {{- if .Values.connections.mongodb.enabled }}
+            {{- if or .Values.connections.mongodb.enabled (eq .Values.storage.type "mongodb") }}
             {{- if .Values.connections.mongodb.username }}
             - name: MONGODB_USER
               valueFrom:
@@ -117,7 +117,7 @@ spec:
             {{- end }}
             {{- end }}
             
-            {{- if .Values.connections.influxdb.enabled }}
+            {{- if or .Values.connections.influxdb.enabled (eq .Values.storage.type "influxdb") }}
             {{- if .Values.connections.influxdb.token }}
             - name: INFLUXDB_TOKEN
               valueFrom:
@@ -127,7 +127,7 @@ spec:
             {{- end }}
             {{- end }}
             
-            {{- if .Values.connections.elasticsearch.enabled }}
+            {{- if or .Values.connections.elasticsearch.enabled (eq .Values.storage.type "elasticsearch") }}
             {{- if .Values.connections.elasticsearch.username }}
             - name: ELASTICSEARCH_USER
               valueFrom:
@@ -151,7 +151,7 @@ spec:
             {{- end }}
             {{- end }}
             
-            {{- if .Values.connections.azure.enabled }}
+            {{- if or .Values.connections.azure.enabled (eq .Values.storage.type "azure") }}
             # Azure Log Analytics Credentials
             {{- if .Values.connections.azure.workspaceId }}
             - name: AZURE_LOG_ANALYTICS_WORKSPACE_ID
@@ -169,13 +169,13 @@ spec:
             {{- end }}
             {{- end }}
             
-            {{- if .Values.connections.gcp.enabled }}
+            {{- if or .Values.connections.gcp.enabled (eq .Values.storage.type "gcp") }}
             # GCP Cloud Logging Configuration
             # Note: If using Workload Identity, no credentials are mounted
             # The GOOGLE_APPLICATION_CREDENTIALS env var is set in ConfigMap
             {{- end }}
             
-            {{- if .Values.connections.aws.enabled }}
+            {{- if or .Values.connections.aws.enabled (eq .Values.storage.type "aws") }}
             # AWS CloudWatch Logs Credentials
             {{- if .Values.connections.aws.accessKeyId }}
             - name: AWS_ACCESS_KEY_ID

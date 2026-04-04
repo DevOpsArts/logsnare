@@ -54,8 +54,8 @@ data:
   # Credentials (username/password/token) are in Secrets
   # ==========================================================================
   
-  {{- if .Values.connections.mongodb.enabled }}
-  # MongoDB Configuration
+  {{- if or .Values.connections.mongodb.enabled (eq .Values.storage.type "mongodb") }}
+  # MongoDB Configuration (auto-enabled when storage.type=mongodb)
   MONGODB_HOST: {{ .Values.connections.mongodb.host | quote }}
   MONGODB_PORT: {{ .Values.connections.mongodb.port | quote }}
   MONGODB_DATABASE: {{ .Values.connections.mongodb.database | quote }}
@@ -119,8 +119,8 @@ data:
   {{- end }}
   {{- end }}
   
-  {{- if .Values.connections.influxdb.enabled }}
-  # InfluxDB Configuration
+  {{- if or .Values.connections.influxdb.enabled (eq .Values.storage.type "influxdb") }}
+  # InfluxDB Configuration (auto-enabled when storage.type=influxdb)
   INFLUXDB_URL: {{ .Values.connections.influxdb.url | quote }}
   INFLUXDB_ORG: {{ .Values.connections.influxdb.org | quote }}
   INFLUXDB_BUCKET: {{ .Values.connections.influxdb.bucket | quote }}
@@ -140,8 +140,8 @@ data:
   {{- end }}
   {{- end }}
   
-  {{- if .Values.connections.elasticsearch.enabled }}
-  # Elasticsearch/OpenSearch Configuration
+  {{- if or .Values.connections.elasticsearch.enabled (eq .Values.storage.type "elasticsearch") }}
+  # Elasticsearch/OpenSearch Configuration (auto-enabled when storage.type=elasticsearch)
   ELASTICSEARCH_HOSTS: {{ .Values.connections.elasticsearch.hosts | quote }}
   ELASTICSEARCH_INDEX: {{ .Values.connections.elasticsearch.index | quote }}
   # Elasticsearch SSL/TLS Configuration
@@ -160,8 +160,8 @@ data:
   {{- end }}
   {{- end }}
   
-  {{- if .Values.connections.azure.enabled }}
-  # Azure Log Analytics Configuration
+  {{- if or .Values.connections.azure.enabled (eq .Values.storage.type "azure") }}
+  # Azure Log Analytics Configuration (auto-enabled when storage.type=azure)
   # Note: Workspace ID and Shared Key are stored in Secrets
   AZURE_LOG_ANALYTICS_LOG_TYPE: {{ .Values.connections.azure.logType | default "LogsnareK8sLogs" | quote }}
   {{- if .Values.connections.azure.resourceId }}
@@ -169,8 +169,8 @@ data:
   {{- end }}
   {{- end }}
   
-  {{- if .Values.connections.gcp.enabled }}
-  # GCP Cloud Logging Configuration
+  {{- if or .Values.connections.gcp.enabled (eq .Values.storage.type "gcp") }}
+  # GCP Cloud Logging Configuration (auto-enabled when storage.type=gcp)
   # Note: Service Account Key (if used) is stored in Secrets
   GCP_PROJECT_ID: {{ .Values.connections.gcp.projectId | quote }}
   GCP_LOG_NAME: {{ .Values.connections.gcp.logName | default "logsnare" | quote }}
@@ -189,8 +189,8 @@ data:
   {{- end }}
   {{- end }}
   
-  {{- if .Values.connections.aws.enabled }}
-  # AWS CloudWatch Logs Configuration
+  {{- if or .Values.connections.aws.enabled (eq .Values.storage.type "aws") }}
+  # AWS CloudWatch Logs Configuration (auto-enabled when storage.type=aws)
   # Note: Access Key and Secret Key (if used) are stored in Secrets
   AWS_REGION: {{ .Values.connections.aws.region | quote }}
   AWS_CLOUDWATCH_LOG_GROUP: {{ .Values.connections.aws.logGroup | quote }}
