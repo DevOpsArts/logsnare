@@ -7,9 +7,10 @@ namespace:
   name: logsnare
 
 # Image configuration
+# NOTE: If tag is empty, defaults to Chart.AppVersion
 image:
   repository: devopsart1/logsnare-engine
-  tag: "0.4.1"
+  tag: ""  # Empty = uses appVersion from Chart.yaml
   pullPolicy: IfNotPresent
 
 # Replica count
