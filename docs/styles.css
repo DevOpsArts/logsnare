@@ -735,10 +735,15 @@ img {
 }
 
 .footer-content {
-    display: grid;
-    grid-template-columns: 1.5fr repeat(3, 1fr);
+    display: flex;
+    justify-content: space-between;
     gap: 48px;
     margin-bottom: 48px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 80px;
 }
 
 .footer-brand p {
@@ -817,7 +822,11 @@ img {
     }
     
     .footer-content {
-        grid-template-columns: 1fr 1fr;
+        flex-wrap: wrap;
+    }
+    
+    .footer-links {
+        gap: 48px;
     }
 }
 
@@ -883,8 +892,13 @@ img {
     }
     
     .footer-content {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 32px;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 24px;
     }
     
     .cta-buttons {
