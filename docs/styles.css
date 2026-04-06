@@ -101,6 +101,11 @@ img {
     font-size: 1.75rem;
 }
 
+.logo-img {
+    height: 36px;
+    width: auto;
+}
+
 .nav-links {
     display: flex;
     align-items: center;
