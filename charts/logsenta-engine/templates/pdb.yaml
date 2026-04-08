@@ -1,14 +1,14 @@
 {{- if and .Values.podDisruptionBudget.enabled (gt (int .Values.replicaCount) 1) }}
-# Logsnare - PodDisruptionBudget
+# Logsenta - PodDisruptionBudget
 # SECURITY_NOTE: Ensures high availability during voluntary disruptions
 # (rolling updates, node drains, cluster upgrades)
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "logsnare.fullname" . }}
-  namespace: {{ include "logsnare.namespace" . }}
+  name: {{ include "logsenta.fullname" . }}
+  namespace: {{ include "logsenta.namespace" . }}
   labels:
-    {{- include "logsnare.labels" . | nindent 4 }}
+    {{- include "logsenta.labels" . | nindent 4 }}
     app.kubernetes.io/component: high-availability
 spec:
   {{- if .Values.podDisruptionBudget.minAvailable }}
@@ -21,5 +21,5 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "logsnare.selectorLabels" . | nindent 6 }}
+      {{- include "logsenta.selectorLabels" . | nindent 6 }}
 {{- end }}

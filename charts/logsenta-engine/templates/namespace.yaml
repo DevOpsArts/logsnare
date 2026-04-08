@@ -1,10 +1,10 @@
 {{- if .Values.namespace.create }}
-# Logsnare - Namespace
+# Logsenta - Namespace
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ include "logsnare.namespace" . }}
+  name: {{ include "logsenta.namespace" . }}
   labels:
-    {{- include "logsnare.labels" . | nindent 4 }}
+    {{- include "logsenta.labels" . | nindent 4 }}
     app.kubernetes.io/component: monitoring
 {{- end }}

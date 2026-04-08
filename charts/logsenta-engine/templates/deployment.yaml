@@ -1,35 +1,35 @@
-# Logsnare - Deployment
+# Logsenta - Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "logsnare.fullname" . }}
-  namespace: {{ include "logsnare.namespace" . }}
+  name: {{ include "logsenta.fullname" . }}
+  namespace: {{ include "logsenta.namespace" . }}
   labels:
-    {{- include "logsnare.labels" . | nindent 4 }}
+    {{- include "logsenta.labels" . | nindent 4 }}
     app.kubernetes.io/component: monitoring
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "logsnare.selectorLabels" . | nindent 6 }}
+      {{- include "logsenta.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "logsnare.selectorLabels" . | nindent 8 }}
+        {{- include "logsenta.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
         # Force pod restart on config change
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        {{- if include "logsnare.secretsEnabled" . }}
+        {{- if include "logsenta.secretsEnabled" . }}
         checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ include "logsnare.serviceAccountName" . }}
+      serviceAccountName: {{ include "logsenta.serviceAccountName" . }}
       
       # SECURITY_NOTE: Allow graceful shutdown for clean resource cleanup
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
@@ -50,7 +50,7 @@ spec:
           # Load all non-secret env vars from ConfigMap
           envFrom:
             - configMapRef:
-                name: {{ include "logsnare.configmapName" . }}
+                name: {{ include "logsenta.configmapName" . }}
           
           env:
             # Pod identity for leader election (using downward API)
@@ -71,14 +71,14 @@ spec:
             - name: MONGODB_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: mongodb-username
             {{- end }}
             {{- if .Values.connections.mongodb.password }}
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: mongodb-password
             {{- end }}
             {{- end }}
@@ -88,14 +88,14 @@ spec:
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: mysql-username
             {{- end }}
             {{- if .Values.connections.mysql.password }}
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: mysql-password
             {{- end }}
             {{- end }}
@@ -105,14 +105,14 @@ spec:
             - name: POSTGRESQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: postgresql-username
             {{- end }}
             {{- if .Values.connections.postgresql.password }}
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: postgresql-password
             {{- end }}
             {{- end }}
@@ -122,7 +122,7 @@ spec:
             - name: INFLUXDB_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: influxdb-token
             {{- end }}
             {{- end }}
@@ -132,21 +132,21 @@ spec:
             - name: ELASTICSEARCH_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: elasticsearch-username
             {{- end }}
             {{- if .Values.connections.elasticsearch.password }}
             - name: ELASTICSEARCH_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: elasticsearch-password
             {{- end }}
             {{- if .Values.connections.elasticsearch.apiKey }}
             - name: ELASTICSEARCH_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: elasticsearch-api-key
             {{- end }}
             {{- end }}
@@ -157,14 +157,14 @@ spec:
             - name: AZURE_LOG_ANALYTICS_WORKSPACE_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: azure-workspace-id
             {{- end }}
             {{- if .Values.connections.azure.sharedKey }}
             - name: AZURE_LOG_ANALYTICS_SHARED_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: azure-shared-key
             {{- end }}
             {{- end }}
@@ -181,14 +181,14 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: aws-access-key-id
             {{- end }}
             {{- if .Values.connections.aws.secretAccessKey }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: aws-secret-access-key
             {{- end }}
             {{- end }}
@@ -202,14 +202,14 @@ spec:
             - name: ALERTING_SMTP_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: alerting-smtp-username
             {{- end }}
             {{- if .Values.alerting.email.password }}
             - name: ALERTING_SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" . }}
+                  name: {{ include "logsenta.secretName" . }}
                   key: alerting-smtp-password
             {{- end }}
             {{- end }}
@@ -221,7 +221,7 @@ spec:
             - name: ALERTING_WEBHOOK_{{ .name | upper | replace "-" "_" }}_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "logsnare.secretName" $ }}
+                  name: {{ include "logsenta.secretName" $ }}
                   key: alerting-webhook-{{ .name }}-url
             {{- end }}
             {{- end }}
@@ -277,7 +277,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ include "logsnare.configmapName" . }}
+            name: {{ include "logsenta.configmapName" . }}
         # Using emptyDir instead of PVC - logs are ephemeral
         - name: logs
           emptyDir:
@@ -292,14 +292,14 @@ spec:
         # SSL/TLS certificates from Kubernetes secret
         - name: ssl-certs
           secret:
-            secretName: {{ .Values.sslCertificates.secretName | default "logsnare-db-certs" }}
+            secretName: {{ .Values.sslCertificates.secretName | default "logsenta-db-certs" }}
             defaultMode: 0400
         {{- end }}
         {{- if and .Values.connections.gcp.enabled .Values.connections.gcp.serviceAccountKey }}
         # GCP Service Account Key (when not using Workload Identity)
         - name: gcp-credentials
           secret:
-            secretName: {{ include "logsnare.secretName" . }}
+            secretName: {{ include "logsenta.secretName" . }}
             defaultMode: 0400
             items:
               - key: gcp-service-account-key

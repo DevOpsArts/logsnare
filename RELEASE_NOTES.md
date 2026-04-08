@@ -1,4 +1,4 @@
-## 🚀 Logsnare v1.1.0
+## 🚀 Logsenta v1.1.0
 
 ### Features
 - **9 Storage Backends**: File, PostgreSQL, MongoDB, MySQL, InfluxDB, Elasticsearch, Azure Log Analytics, AWS CloudWatch, GCP Cloud Logging
@@ -11,14 +11,14 @@
 ### Installation
 
 ```bash
-git clone https://github.com/DevOpsArts/logsnare.git
-cd logsnare
-helm install logsnare-engine ./charts/logsnare-engine --namespace logsnare --create-namespace
+git clone https://github.com/DevOpsArts/logsenta.git
+cd logsenta
+helm install logsenta-engine ./charts/logsenta-engine --namespace logsenta --create-namespace
 ```
 
 ### Documentation
-- 📖 [Wiki Documentation](https://github.com/DevOpsArts/logsnare/wiki)
-- 📦 [Docker Image](https://hub.docker.com/r/devopsart1/logsnare-engine)
+- 📖 [Wiki Documentation](https://github.com/DevOpsArts/logsenta/wiki)
+- 📦 [Docker Image](https://hub.docker.com/r/devopsart1/logsenta-engine)
 
 ### What's New
 - Added Azure Log Analytics, AWS CloudWatch, GCP Cloud Logging backends

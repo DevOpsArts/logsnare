@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo-horizontal.svg" alt="Logsnare" width="400">
+  <img src="logo-horizontal.svg" alt="Logsenta" width="400">
 </p>
 
 <p align="center">
@@ -10,11 +10,11 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24%2B-blue.svg)](https://kubernetes.io)
 
-Official Helm charts for deploying **Logsnare-Engine** - a scalable Kubernetes log monitoring agent with intelligent error detection, pattern-based alerting, and multi-backend storage support.
+Official Helm charts for deploying **Logsenta-Engine** - a scalable Kubernetes log monitoring agent with intelligent error detection, pattern-based alerting, and multi-backend storage support.
 
 ## Overview
 
-Logsnare-Engine monitors pod logs across Kubernetes namespaces and captures contextual log data when errors are detected. It supports rule-based alerting (email, Slack, Teams, PagerDuty, webhooks) and multiple storage backends including PostgreSQL, MongoDB, MySQL, Elasticsearch, InfluxDB, Azure Log Analytics, AWS CloudWatch, and GCP Cloud Logging.
+Logsenta-Engine monitors pod logs across Kubernetes namespaces and captures contextual log data when errors are detected. It supports rule-based alerting (email, Slack, Teams, PagerDuty, webhooks) and multiple storage backends including PostgreSQL, MongoDB, MySQL, Elasticsearch, InfluxDB, Azure Log Analytics, AWS CloudWatch, and GCP Cloud Logging.
 
 ## Quick Start
 
@@ -22,39 +22,39 @@ Logsnare-Engine monitors pod logs across Kubernetes namespaces and captures cont
 
 ```bash
 # Clone the repository
-git clone https://github.com/DevOpsArts/logsnare.git
-cd logsnare
+git clone https://github.com/DevOpsArts/logsenta.git
+cd logsenta
 
 # Install with default settings (File Storage)
-helm install logsnare-engine ./charts/logsnare-engine \
-  --namespace logsnare \
+helm install logsenta-engine ./charts/logsenta-engine \
+  --namespace logsenta \
   --create-namespace
 ```
 
 ### Install with PostgreSQL
 
 ```bash
-helm install logsnare-engine ./charts/logsnare-engine \
-  --namespace logsnare \
+helm install logsenta-engine ./charts/logsenta-engine \
+  --namespace logsenta \
   --create-namespace \
   --set storage.type=postgresql \
   --set connections.postgresql.enabled=true \
   --set connections.postgresql.host=postgresql.database.svc.cluster.local \
-  --set connections.postgresql.username=logsnare \
+  --set connections.postgresql.username=logsenta \
   --set connections.postgresql.password=<REPLACE_ME>
 ```
 
 ### Install with Azure Log Analytics
 
 ```bash
-helm install logsnare-engine ./charts/logsnare-engine \
-  --namespace logsnare \
+helm install logsenta-engine ./charts/logsenta-engine \
+  --namespace logsenta \
   --create-namespace \
   --set storage.type=azure \
   --set connections.azure.enabled=true \
   --set connections.azure.workspaceId=<REPLACE_ME> \
   --set connections.azure.sharedKey=<REPLACE_ME> \
-  --set connections.azure.logType=LogsnareK8sLogs
+  --set connections.azure.logType=LogsentaK8sLogs
 ```
 
 ## Supported Storage Backends
@@ -78,9 +78,8 @@ helm install logsnare-engine ./charts/logsnare-engine \
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `replicaCount` | Number of replicas | `1` |
-| `image.repository` | Image repository | `devopsart1/logsnare-engine` |
+| `image.repository` | Image repository | `devopsart1/logsenta-engine` |
 | `image.tag` | Image tag | `0.4.2` |
-| `storage.enabled` | Enable/disable storage backend (monitor + alert only when false) | `true` |
 | `storage.type` | Storage backend type | `file` |
 | `monitoring.namespaces` | Namespaces to monitor | `["default", "kube-system"]` |
 | `scalability.maxWorkers` | Max concurrent pod monitors | `20` |
@@ -88,7 +87,7 @@ helm install logsnare-engine ./charts/logsnare-engine \
 
 ### Full Configuration
 
-See [values.yaml](charts/logsnare-engine/values.yaml) for all available configuration options.
+See [values.yaml](charts/logsenta-engine/values.yaml) for all available configuration options.
 
 ## Capacity Planning
 
@@ -105,34 +104,34 @@ See [values.yaml](charts/logsnare-engine/values.yaml) for all available configur
 For production deployments, enable leader election:
 
 ```bash
-helm install logsnare-engine ./charts/logsnare-engine \
-  --namespace logsnare \
+helm install logsenta-engine ./charts/logsenta-engine \
+  --namespace logsenta \
   --create-namespace \
   --set replicaCount=3 \
   --set leaderElection.enabled=true \
   --set storage.type=postgresql \
   --set connections.postgresql.enabled=true \
   --set connections.postgresql.host=postgresql.database.svc.cluster.local \
-  --set connections.postgresql.username=logsnare \
+  --set connections.postgresql.username=logsenta \
   --set connections.postgresql.password=<REPLACE_ME>
 ```
 
 ## Uninstall
 
 ```bash
-helm uninstall logsnare-engine -n logsnare
-kubectl delete namespace logsnare
+helm uninstall logsenta-engine -n logsenta
+kubectl delete namespace logsenta
 ```
 
 ## Documentation
 
-📖 **[Wiki Documentation](https://github.com/devopsarts/logsnare/wiki)** - Complete guides and references
+📖 **[Wiki Documentation](https://github.com/devopsarts/logsenta/wiki)** - Complete guides and references
 
-- [Installation Guide](https://github.com/devopsarts/logsnare/wiki/Installation-Guide) - Step-by-step installation for all storage backends
-- [Configuration Reference](https://github.com/devopsarts/logsnare/wiki/Configuration-Reference) - All Helm chart values explained
-- [Storage Backends](https://github.com/devopsarts/logsnare/wiki/Storage-Backends) - Detailed setup for each storage option
-- [Capacity Planning](https://github.com/devopsarts/logsnare/wiki/Capacity-Planning) - Resource sizing guidelines
-- [Troubleshooting](https://github.com/devopsarts/logsnare/wiki/Troubleshooting) - Common issues and solutions
+- [Installation Guide](https://github.com/devopsarts/logsenta/wiki/Installation-Guide) - Step-by-step installation for all storage backends
+- [Configuration Reference](https://github.com/devopsarts/logsenta/wiki/Configuration-Reference) - All Helm chart values explained
+- [Storage Backends](https://github.com/devopsarts/logsenta/wiki/Storage-Backends) - Detailed setup for each storage option
+- [Capacity Planning](https://github.com/devopsarts/logsenta/wiki/Capacity-Planning) - Resource sizing guidelines
+- [Troubleshooting](https://github.com/devopsarts/logsenta/wiki/Troubleshooting) - Common issues and solutions
 
 ## Requirements
 
@@ -151,5 +150,5 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## Support
 
-- **Wiki**: [https://github.com/devopsarts/logsnare/wiki](https://github.com/devopsarts/logsnare/wiki)
-- **Issues**: [https://github.com/devopsarts/logsnare/issues](https://github.com/devopsarts/logsnare/issues)
+- **Wiki**: [https://github.com/devopsarts/logsenta/wiki](https://github.com/devopsarts/logsenta/wiki)
+- **Issues**: [https://github.com/devopsarts/logsenta/issues](https://github.com/devopsarts/logsenta/issues)

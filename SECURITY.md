@@ -10,7 +10,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within Logsnare, please send an email to devopsarts@gmail.com. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Logsenta, please send an email to devopsarts@gmail.com. All security vulnerabilities will be promptly addressed.
 
 Please include the following information:
 - Type of vulnerability
@@ -26,7 +26,7 @@ Please include the following information:
 
 ```bash
 # Good: Pass credentials at deploy time
-helm install logsnare-engine logsnare/logsnare-engine \
+helm install logsenta-engine logsenta/logsenta-engine \
   --set connections.postgresql.username=$DB_USER \
   --set connections.postgresql.password=$DB_PASSWORD
 
@@ -49,18 +49,18 @@ Example with External Secrets Operator:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: logsnare-db-credentials
+  name: logsenta-db-credentials
 spec:
   refreshInterval: 1h
   secretStoreRef:
     name: azure-key-vault
     kind: SecretStore
   target:
-    name: logsnare-engine-credentials
+    name: logsenta-engine-credentials
   data:
     - secretKey: postgresql-password
       remoteRef:
-        key: logsnare-db-password
+        key: logsenta-db-password
 ```
 
 ### 3. Enable Network Policies
@@ -71,12 +71,12 @@ Restrict pod-to-pod communication:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: logsnare-engine-policy
-  namespace: logsnare
+  name: logsenta-engine-policy
+  namespace: logsenta
 spec:
   podSelector:
     matchLabels:
-      app: logsnare-engine
+      app: logsenta-engine
   policyTypes:
     - Ingress
     - Egress
@@ -146,7 +146,7 @@ connections:
 
 ```yaml
 image:
-  repository: devopsart1/logsnare-engine
+  repository: devopsart1/logsenta-engine
   tag: "0.4.2"  # Specific version, not "latest"
   pullPolicy: IfNotPresent
 ```
@@ -167,13 +167,13 @@ resources:
 
 ### 9. Audit Logging
 
-Enable Kubernetes audit logging to track API access to logsnare resources.
+Enable Kubernetes audit logging to track API access to logsenta resources.
 
 ### 10. Regular Updates
 
 Keep the Helm chart and container images updated to receive security patches.
 
-## Security Features in Logsnare-Engine
+## Security Features in Logsenta-Engine
 
 1. **Input Sanitization**: All log lines are sanitized before storage
 2. **No Credential Logging**: Credentials are never logged

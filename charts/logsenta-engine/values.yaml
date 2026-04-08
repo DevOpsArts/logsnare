@@ -1,15 +1,15 @@
-# Logsnare-Engine Helm Chart Values
+# Logsenta-Engine Helm Chart Values
 # ==================================
 
 # Namespace configuration
 namespace:
   create: true
-  name: logsnare
+  name: logsenta
 
 # Image configuration
 # NOTE: If tag is empty, defaults to Chart.AppVersion (currently 0.4.2)
 image:
-  repository: devopsart1/logsnare-engine
+  repository: devopsart1/logsenta-engine
   tag: ""  # Empty = uses appVersion from Chart.yaml
   pullPolicy: IfNotPresent
 
@@ -19,7 +19,7 @@ replicaCount: 1
 # Service account configuration
 serviceAccount:
   create: true
-  name: logsnare-engine
+  name: logsenta-engine
 
 # RBAC configuration
 rbac:
@@ -32,7 +32,7 @@ rbac:
 leaderElection:
   enabled: false
   # Name of the Lease object used for leader election
-  leaseName: "logsnare-engine-leader"
+  leaseName: "logsenta-engine-leader"
   # How long the lease is valid (seconds)
   leaseDurationSeconds: 15
   # How long to try renewing before giving up (seconds)
@@ -95,7 +95,7 @@ containerSecurityContext:
 # Setting the type automatically enables the corresponding connection configuration.
 # Configure credentials in the connections.<backend> section below.
 storage:
-  # Enable/disable storage backend. When disabled, Logsnare only monitors and alerts.
+  # Enable/disable storage backend. When disabled, Logsenta only monitors and alerts.
   # Useful for "monitor + alert only" mode without persisting logs to storage.
   enabled: true
   type: "postgresql"
@@ -164,7 +164,7 @@ connections:
   # The 'enabled' flag can be used to explicitly control config injection.
   mysql:
     enabled: false
-    host: "mysql.logsnare.svc.cluster.local"
+    host: "mysql.logsenta.svc.cluster.local"
     port: 3306
     database: "k8s_logs"
     table: "error_logs"
@@ -190,7 +190,7 @@ connections:
   # The 'enabled' flag can be used to explicitly control config injection.
   postgresql:
     enabled: true
-    host: "postgresql.logsnare.svc.cluster.local"
+    host: "postgresql.logsenta.svc.cluster.local"
     port: 5432
     database: "k8s_logs"
     table: "error_logs"
@@ -273,8 +273,8 @@ connections:
     # REPLACE_ME: Set your shared key
     sharedKey: ""
     # Custom log type name (becomes table name with _CL suffix)
-    # e.g., "LogsnareK8sLogs" creates table "LogsnareK8sLogs_CL"
-    logType: "LogsnareK8sLogs"
+    # e.g., "LogsentaK8sLogs" creates table "LogsentaK8sLogs_CL"
+    logType: "LogsentaK8sLogs"
     # Optional: Azure Resource ID for resource context
     # Format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/{provider}/{resource-type}/{resource-name}
     resourceId: ""
@@ -292,7 +292,7 @@ connections:
     projectId: ""
     # Log name in Cloud Logging
     # Full path: projects/{project}/logs/{logName}
-    logName: "logsnare"
+    logName: "logsenta"
     # Monitored resource type for log entries
     # Options: k8s_container, k8s_pod, k8s_cluster, global
     resourceType: "k8s_container"
@@ -324,7 +324,7 @@ connections:
     # REPLACE_ME: Set your log group name
     logGroup: ""
     # Log stream prefix (log streams: {prefix}/{namespace}/{pod_name})
-    logStreamPrefix: "logsnare"
+    logStreamPrefix: "logsenta"
     # Log retention in days (default: 30)
     # Valid values: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653
     retentionDays: 30
@@ -345,7 +345,7 @@ sslCertificates:
   # Enable mounting SSL certificates from secrets
   enabled: false
   # Name of the secret containing SSL certificates
-  secretName: "logsnare-db-certs"
+  secretName: "logsenta-db-certs"
   # Mount path for certificates inside the container
   mountPath: "/certs"
   # Certificate file names in the secret (customize based on your secret)
@@ -454,7 +454,7 @@ alerting:
     username: ""
     password: ""
     # Sender email address
-    fromAddress: "logsnare-alerts@example.com"
+    fromAddress: "logsenta-alerts@example.com"
     # Recipient email addresses
     toAddresses:
       - "sre-team@example.com"
@@ -681,7 +681,7 @@ networkPolicy:
     #   app: mysql
   
   postgresql:
-    namespace: "logsnare"
+    namespace: "logsenta"
     # podSelector:
     #   app: postgresql
   
@@ -691,6 +691,6 @@ networkPolicy:
     #   app: influxdb
   
   elasticsearch:
-    namespace: "logsnare"
+    namespace: "logsenta"
     # podSelector:
     #   app: elasticsearch

@@ -1,12 +1,12 @@
-# Logsnare - ConfigMap
+# Logsenta - ConfigMap
 # Contains all non-secret configuration (env vars and config file)
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "logsnare.configmapName" . }}
-  namespace: {{ include "logsnare.namespace" . }}
+  name: {{ include "logsenta.configmapName" . }}
+  namespace: {{ include "logsenta.namespace" . }}
   labels:
-    {{- include "logsnare.labels" . | nindent 4 }}
+    {{- include "logsenta.labels" . | nindent 4 }}
     app.kubernetes.io/component: config
 data:
   # ==========================================================================
@@ -164,7 +164,7 @@ data:
   {{- if or .Values.connections.azure.enabled (eq .Values.storage.type "azure") }}
   # Azure Log Analytics Configuration (auto-enabled when storage.type=azure)
   # Note: Workspace ID and Shared Key are stored in Secrets
-  AZURE_LOG_ANALYTICS_LOG_TYPE: {{ .Values.connections.azure.logType | default "LogsnareK8sLogs" | quote }}
+  AZURE_LOG_ANALYTICS_LOG_TYPE: {{ .Values.connections.azure.logType | default "LogsentaK8sLogs" | quote }}
   {{- if .Values.connections.azure.resourceId }}
   AZURE_LOG_ANALYTICS_RESOURCE_ID: {{ .Values.connections.azure.resourceId | quote }}
   {{- end }}
@@ -174,7 +174,7 @@ data:
   # GCP Cloud Logging Configuration (auto-enabled when storage.type=gcp)
   # Note: Service Account Key (if used) is stored in Secrets
   GCP_PROJECT_ID: {{ .Values.connections.gcp.projectId | quote }}
-  GCP_LOG_NAME: {{ .Values.connections.gcp.logName | default "logsnare" | quote }}
+  GCP_LOG_NAME: {{ .Values.connections.gcp.logName | default "logsenta" | quote }}
   GCP_CLOUD_LOGGING_RESOURCE_TYPE: {{ .Values.connections.gcp.resourceType | default "k8s_container" | quote }}
   {{- if .Values.connections.gcp.clusterName }}
   GCP_CLOUD_LOGGING_CLUSTER_NAME: {{ .Values.connections.gcp.clusterName | quote }}
@@ -195,7 +195,7 @@ data:
   # Note: Access Key and Secret Key (if used) are stored in Secrets
   AWS_REGION: {{ .Values.connections.aws.region | quote }}
   AWS_CLOUDWATCH_LOG_GROUP: {{ .Values.connections.aws.logGroup | quote }}
-  AWS_CLOUDWATCH_LOG_STREAM_PREFIX: {{ .Values.connections.aws.logStreamPrefix | default "logsnare" | quote }}
+  AWS_CLOUDWATCH_LOG_STREAM_PREFIX: {{ .Values.connections.aws.logStreamPrefix | default "logsenta" | quote }}
   AWS_CLOUDWATCH_RETENTION_DAYS: {{ .Values.connections.aws.retentionDays | default 30 | quote }}
   {{- end }}
   
@@ -223,7 +223,7 @@ data:
   {{- if .Values.alerting.email.ccAddresses }}
   ALERTING_EMAIL_CC: {{ .Values.alerting.email.ccAddresses | join "," | quote }}
   {{- end }}
-  ALERTING_EMAIL_SUBJECT_PREFIX: {{ .Values.alerting.email.subjectPrefix | default "[Logsnare Alert]" | quote }}
+  ALERTING_EMAIL_SUBJECT_PREFIX: {{ .Values.alerting.email.subjectPrefix | default "[Logsenta Alert]" | quote }}
   # Note: SMTP Username and Password are stored in Secrets
   {{- end }}
   
@@ -239,7 +239,7 @@ data:
   # Application Config File (YAML format for Python app)
   # ==========================================================================
   monitor-config.yaml: |
-    # Logsnare Configuration
+    # Logsenta Configuration
     # ================================
     
     # ==========================================================
@@ -303,7 +303,7 @@ data:
           - {{ . | quote }}
           {{- end }}
         {{- end }}
-        subject_prefix: {{ .Values.alerting.email.subjectPrefix | default "[Logsnare Alert]" | quote }}
+        subject_prefix: {{ .Values.alerting.email.subjectPrefix | default "[Logsenta Alert]" | quote }}
       {{- end }}
       {{- if .Values.alerting.webhooks }}
       webhooks:

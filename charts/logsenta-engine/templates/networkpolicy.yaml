@@ -1,24 +1,24 @@
 {{- if .Values.networkPolicy.enabled }}
-# Logsnare - NetworkPolicy
+# Logsenta - NetworkPolicy
 # SECURITY_NOTE: Restricts network access to only required destinations
 # Follows principle of least privilege for network access
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "logsnare.fullname" . }}
-  namespace: {{ include "logsnare.namespace" . }}
+  name: {{ include "logsenta.fullname" . }}
+  namespace: {{ include "logsenta.namespace" . }}
   labels:
-    {{- include "logsnare.labels" . | nindent 4 }}
+    {{- include "logsenta.labels" . | nindent 4 }}
     app.kubernetes.io/component: network-security
 spec:
   podSelector:
     matchLabels:
-      {{- include "logsnare.selectorLabels" . | nindent 6 }}
+      {{- include "logsenta.selectorLabels" . | nindent 6 }}
   policyTypes:
     - Ingress
     - Egress
   
-  # No ingress needed - Logsnare is a monitoring agent, not a server
+  # No ingress needed - Logsenta is a monitoring agent, not a server
   ingress: []
   
   egress:
@@ -86,7 +86,7 @@ spec:
             {{- toYaml .Values.networkPolicy.postgresql.podSelector | nindent 12 }}
           namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: {{ .Values.networkPolicy.postgresql.namespace | default "logsnare" }}
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.postgresql.namespace | default "logsenta" }}
         {{- else }}
         - namespaceSelector: {}
         {{- end }}
@@ -120,7 +120,7 @@ spec:
             {{- toYaml .Values.networkPolicy.elasticsearch.podSelector | nindent 12 }}
           namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: {{ .Values.networkPolicy.elasticsearch.namespace | default "logsnare" }}
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.elasticsearch.namespace | default "logsenta" }}
         {{- else }}
         - namespaceSelector: {}
         {{- end }}

@@ -7,22 +7,22 @@
               |___/                           
 ====================================================================
 
-Logsnare has been deployed successfully!
+Logsenta has been deployed successfully!
 
 Release: {{ .Release.Name }}
-Namespace: {{ include "logsnare.namespace" . }}
+Namespace: {{ include "logsenta.namespace" . }}
 Storage Type: {{ .Values.storage.type }}
 
 To check the status of the deployment:
-  kubectl get pods -n {{ include "logsnare.namespace" . }} -l app={{ include "logsnare.name" . }}
+  kubectl get pods -n {{ include "logsenta.namespace" . }} -l app={{ include "logsenta.name" . }}
 
 To view logs from the monitor:
-  kubectl logs -n {{ include "logsnare.namespace" . }} -l app={{ include "logsnare.name" . }} -f
+  kubectl logs -n {{ include "logsenta.namespace" . }} -l app={{ include "logsenta.name" . }} -f
 
 To check the configuration:
-  kubectl get configmap {{ include "logsnare.configmapName" . }} -n {{ include "logsnare.namespace" . }} -o yaml
+  kubectl get configmap {{ include "logsenta.configmapName" . }} -n {{ include "logsenta.namespace" . }} -o yaml
 
-{{- if include "logsnare.secretsEnabled" . }}
+{{- if include "logsenta.secretsEnabled" . }}
 
 SECURITY NOTE:
 The following database connections are configured:
@@ -39,7 +39,7 @@ The following database connections are configured:
   - Elasticsearch: {{ .Values.connections.elasticsearch.hosts }}
 {{- end }}
 
-Credentials are stored in Secret: {{ include "logsnare.secretName" . }}
+Credentials are stored in Secret: {{ include "logsenta.secretName" . }}
 {{- end }}
 
 Monitored namespaces:
